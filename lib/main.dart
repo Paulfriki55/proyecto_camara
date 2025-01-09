@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'vista/home_screen.dart';
+import 'controlador/producto_controlador.dart';
 
 void main() {
   runApp(MyApp());
@@ -8,13 +10,16 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Registro de Productos',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return ChangeNotifierProvider(
+      create: (context) => ProductoControlador(),
+      child: MaterialApp(
+        title: 'Registro de Productos',
+        theme: ThemeData(
+          primarySwatch: Colors.deepPurple,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: PantallaPrincipal(),
       ),
-      home: PantallaPrincipal(),
     );
   }
 }

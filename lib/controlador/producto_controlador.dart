@@ -1,8 +1,9 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../modelo/producto_modelo.dart';
 
-class ProductoControlador {
+class ProductoControlador extends ChangeNotifier {
   List<Producto> _productos = [];
 
   List<Producto> obtenerProductos() {
@@ -12,11 +13,22 @@ class ProductoControlador {
   void agregarProducto(Producto producto) {
     _productos.add(producto);
     _guardarProductosEnAlmacenamiento();
+    notifyListeners();
   }
 
   void eliminarProducto(Producto producto) {
     _productos.removeWhere((p) => p.rutaImagen == producto.rutaImagen);
     _guardarProductosEnAlmacenamiento();
+    notifyListeners();
+  }
+
+  Future<void> editarProducto(String rutaImagenOriginal, Producto productoEditado) async {
+    final index = _productos.indexWhere((p) => p.rutaImagen == rutaImagenOriginal);
+    if (index != -1) {
+      _productos[index] = productoEditado;
+      await _guardarProductosEnAlmacenamiento();
+      notifyListeners();
+    }
   }
 
   Future<void> cargarProductosDesdeAlmacenamiento() async {
@@ -25,6 +37,7 @@ class ProductoControlador {
     if (productosString != null) {
       final productosJson = jsonDecode(productosString) as List;
       _productos = productosJson.map((json) => Producto.fromJson(json)).toList();
+      notifyListeners();
     }
   }
 
